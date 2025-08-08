@@ -1,6 +1,7 @@
 import BlackCoalPost from "@/components/themes/black-coal/black-coal-post";
 import BlackDiamondPost from "@/components/themes/black-diamond/black-diamond-post";
 import ColourfulBubblesPost from "@/components/themes/colourful-bubbles/colourful-bubbles-post";
+import MidnightSkyPost from "@/components/themes/midnight-sky/midnight-sky-post";
 
 const AllPostThemes = [
   {
@@ -23,6 +24,13 @@ const AllPostThemes = [
     component: BlackCoalPost,
     demoUrl: "/demos/black-coal.png",
     bgUrl: "/backgrounds/black-coal.png",
+  },
+  {
+    name: "midnight-sky",
+    title: "Midnight Sky",
+    component: MidnightSkyPost,
+    demoUrl: "/demos/midnight-sky.png",
+    bgUrl: "/backgrounds/midnight-sky.png",
   },
 ];
 
