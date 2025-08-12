@@ -99,6 +99,11 @@ const Sidebar = (props: Props) => {
           value={topic}
           placeholder="Enter you topic..."
           onChange={handleTopicInput}
+          onKeyDown={(e) => {
+             if (e.key === "Enter" && !isGenerating && topic.length > 0) {
+              fetchStory();
+  }
+}}
         />
         <Button
           onClick={fetchStory}
