@@ -28,8 +28,8 @@ const PostLastPage = () => {
               <Image
                 src={profilePic as string}
                 className="h-20 w-20 rounded-full object-cover"
-                height={20}
-                width={20}
+                height={512}
+                width={512}
                 alt=""
               />
             )}

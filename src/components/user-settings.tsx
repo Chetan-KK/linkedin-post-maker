@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useUser } from "@/lib/useUser";
+import { useLinkedInAuth } from "@/lib/useLinkedInAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UserCog } from "lucide-react";
 // import { useToast } from "./ui/use-toast";
@@ -24,14 +25,49 @@ type Props = {};
 const UserSettings = (props: Props) => {
   // const { toast } = useToast();
 
+  // Access LinkedIn session data
+  const { user: sessionUser, isAuthenticated } = useLinkedInAuth();
+
   // Access Zustand store
-  const { name, username, profilePic, setName, setUsername, setProfilePic } =
-    useUser();
+  const {
+    name,
+    username,
+    profilePic,
+    setName,
+    setUsername,
+    setProfilePic,
+    hasHydrated,
+  } = useUser();
 
   // Local state for form inputs
   const [tempName, setTempName] = useState(name);
   const [tempUsername, setTempUsername] = useState(username);
   const [tempProfilePic, setTempProfilePic] = useState(profilePic);
+
+  // Auto-populate from session if user data is empty and session is available
+  useEffect(() => {
+    if (hasHydrated && isAuthenticated && sessionUser) {
+      // Set name from session if it's empty or null
+      if (!name || name.trim() === "") {
+        setName(sessionUser.name || "");
+        setTempName(sessionUser.name || "");
+      }
+
+      // Set profile picture from session if it's empty or null
+      if (!profilePic || profilePic.trim() === "") {
+        setProfilePic(sessionUser.image || "");
+        setTempProfilePic(sessionUser.image || "");
+      }
+    }
+  }, [
+    hasHydrated,
+    isAuthenticated,
+    sessionUser,
+    name,
+    profilePic,
+    setName,
+    setProfilePic,
+  ]);
 
   useEffect(() => {
     setTempName(name);

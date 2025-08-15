@@ -1,6 +1,7 @@
 import React from "react";
 import PostFirstPage from "./post-first-page";
 import ModificableText from "@/components/modificable-text";
+import ModificableMarkdown from "@/components/modificable-markdown";
 import ModificableCodeBlock from "@/components/modificable-code-block";
 import PostLastPage from "./post-last-page";
 import usePost from "@/lib/usePost";
@@ -31,12 +32,13 @@ const GrayWhisperPost: React.FC = () => {
               {index + 1}. {content.name}
             </h1>
 
-            <ModificableText
+            <ModificableMarkdown
               defaultFont={18}
               className="text-lg text-black/70 my-6"
+              theme="light"
             >
               {content.description}
-            </ModificableText>
+            </ModificableMarkdown>
 
             {content.code && (
               <ModificableCodeBlock

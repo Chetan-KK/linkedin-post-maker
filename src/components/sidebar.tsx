@@ -35,7 +35,6 @@ const Sidebar = (props: Props) => {
 
   function handleTopicInput(e: any) {
     setTopic(e.target.value);
-    console.log();
   }
 
   const fetchStory = async () => {
@@ -100,10 +99,10 @@ const Sidebar = (props: Props) => {
           placeholder="Enter you topic..."
           onChange={handleTopicInput}
           onKeyDown={(e) => {
-             if (e.key === "Enter" && !isGenerating && topic.length > 0) {
+            if (e.key === "Enter" && !isGenerating && topic.length > 0) {
               fetchStory();
-  }
-}}
+            }
+          }}
         />
         <Button
           onClick={fetchStory}

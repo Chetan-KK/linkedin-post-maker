@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { PostData } from "@/lib/types";
 import { useUser } from "@/lib/useUser";
+import { useLinkedInAuth } from "@/lib/useLinkedInAuth";
 
 type Props = {
   contentObject: PostData;
@@ -10,12 +11,17 @@ type Props = {
 
 const UserDescription = ({ contentObject }: Props) => {
   const { name, username, profilePic } = useUser();
+  const { user: sessionUser, isAuthenticated } = useLinkedInAuth();
 
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Get display username - use stored username, fallback to session name, then fallback text
+  const displayUsername =
+    username || (isAuthenticated ? sessionUser?.name : "") || "your name";
 
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
@@ -58,8 +64,7 @@ const UserDescription = ({ contentObject }: Props) => {
               {contentObject.description}
               <br />
               <br />
-              follow @{username ? username : "your name"} for more content like
-              this!!
+              follow @{displayUsername} for more content like this!!
               <br />
               <br />
               {contentObject.hashtags.map(

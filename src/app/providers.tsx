@@ -3,6 +3,7 @@
 import NoProfileError from "@/components/no-profile-error";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { useUser } from "@/lib/useUser";
+import { SessionProvider } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 type Props = {
@@ -20,17 +21,21 @@ const Providers = ({ children }: Props) => {
   // Don't render user-dependent content until hydration is complete
   if (!isClient || !hasHydrated) {
     return (
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {children}
-      </ThemeProvider>
+      <SessionProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
+      </SessionProvider>
     );
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {(!name || !username || !profilePic) && <NoProfileError />}
-      {children}
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {/* {(!name || !username || !profilePic) && <NoProfileError />} */}
+        {children}
+      </ThemeProvider>
+    </SessionProvider>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import PostFirstPage from "./post-first-page";
 import ModificableText from "@/components/modificable-text";
+import ModificableMarkdown from "@/components/modificable-markdown";
 import ModificableCodeBlock from "@/components/modificable-code-block";
 import PostLastPage from "./post-last-page";
 import usePost from "@/lib/usePost";
@@ -21,22 +22,23 @@ const CornerstonePost: React.FC = () => {
             key={index}
             className="relative text-white shadow-lg p-10 px-12 overflow-hidden printSection"
             style={{
-              backgroundImage: "url(/backgrounds/Cornerstone.jpg)", 
+              backgroundImage: "url(/backgrounds/Cornerstone.jpg)",
               backgroundSize: "cover",
               backgroundPosition: "center",
-              backgroundColor: "#1f2024", 
+              backgroundColor: "#1f2024",
             }}
           >
             <h1 className="text-3xl font-semibold z-10 text-gray-200">
               {index + 1}. {content.name}
             </h1>
 
-            <ModificableText
+            <ModificableMarkdown
               defaultFont={18}
               className="text-lg text-gray-300 my-6"
+              theme="dark"
             >
               {content.description}
-            </ModificableText>
+            </ModificableMarkdown>
 
             {content.code && (
               <ModificableCodeBlock

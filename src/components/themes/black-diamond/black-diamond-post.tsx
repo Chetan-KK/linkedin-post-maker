@@ -1,6 +1,7 @@
 import React from "react";
 import PostFirstPage from "./post-first-page";
 import ModificableText from "@/components/modificable-text";
+import ModificableMarkdown from "@/components/modificable-markdown";
 import ModificableCodeBlock from "@/components/modificable-code-block";
 import PostLastPage from "./post-last-page";
 import usePost from "@/lib/usePost";
@@ -34,12 +35,13 @@ const BlackDiamondPost = (props: Props) => {
               {index + 1}. {content.name}
             </h1>
 
-            <ModificableText
+            <ModificableMarkdown
               defaultFont={18}
               className="text-lg text-white/50 my-7"
+              theme="dark"
             >
               {content.description}
-            </ModificableText>
+            </ModificableMarkdown>
             {content.code && (
               <ModificableCodeBlock
                 style={anOldHope}
@@ -56,8 +58,8 @@ const BlackDiamondPost = (props: Props) => {
                 <Image
                   src={profilePic as string}
                   className="h-8 w-8 rounded-full object-cover"
-                  height={8}
-                  width={8}
+                  height={512}
+                  width={512}
                   alt=""
                 />
               )}
