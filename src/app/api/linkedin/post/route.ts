@@ -26,16 +26,40 @@ export async function POST(request: NextRequest) {
 
     if (contentType?.includes("multipart/form-data")) {
       // Handle FormData (with images)
-      const formData = await request.formData();
-      const postDataString = formData.get("postData") as string;
-      postData = JSON.parse(postDataString);
-      description = (formData.get("description") as string) || undefined;
+      try {
+        const formData = await request.formData();
+        const postDataString = formData.get("postData") as string;
+        postData = JSON.parse(postDataString);
+        description = (formData.get("description") as string) || undefined;
 
-      // Get all image files
-      const imageFiles = formData.getAll("images") as File[];
-      images = imageFiles.filter(
-        (file) => file instanceof File && file.size > 0
-      );
+        // Get all image files
+        const imageFiles = formData.getAll("images") as File[];
+        images = imageFiles.filter(
+          (file) => file instanceof File && file.size > 0
+        );
+
+        const totalSize = images.reduce((sum, img) => sum + img.size, 0);
+
+        // Additional safety check - if total size is too large, reduce images
+        const maxTotalSize = 8 * 1024 * 1024; // 8MB limit
+        if (totalSize > maxTotalSize) {
+          console.warn("Payload too large, reducing images");
+          let currentSize = 0;
+          images = images.filter((img) => {
+            if (currentSize + img.size <= maxTotalSize) {
+              currentSize += img.size;
+              return true;
+            }
+            return false;
+          });
+        }
+      } catch (error) {
+        console.error("Error parsing FormData:", error);
+        return NextResponse.json(
+          { error: "Invalid form data or payload too large" },
+          { status: 413 }
+        );
+      }
     } else {
       // Handle JSON (text only)
       const body = await request.json();
@@ -207,6 +231,23 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error posting to LinkedIn:", error);
+
+    // Check if it's a payload size error
+    if (
+      error instanceof Error &&
+      (error.message.includes("too large") ||
+        error.message.includes("FUNCTION_PAYLOAD_TOO_LARGE") ||
+        error.message.includes("Request Entity Too Large"))
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Images are too large. Please try with fewer images or reduce image quality.",
+        },
+        { status: 413 }
+      );
+    }
+
     return NextResponse.json(
       {
         error:

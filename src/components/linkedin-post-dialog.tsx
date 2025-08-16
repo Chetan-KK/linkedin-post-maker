@@ -13,10 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Share2Icon, ImageIcon } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Share2Icon, ImageIcon, CheckCircle, XCircle } from "lucide-react";
 import { useLinkedInPost } from "@/lib/useLinkedInPost";
 import usePost from "@/lib/usePost";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { PostData } from "@/lib/types";
 
 interface LinkedInPostDialogProps {
@@ -30,30 +31,55 @@ export default function LinkedInPostDialog({
   const [customDescription, setCustomDescription] = useState("");
   const [includeImages, setIncludeImages] = useState(true); // Default to include images
   const { contentObject } = usePost();
-  const { toast } = useToast();
 
-  const { postToLinkedIn, isPosting, isAuthenticated } = useLinkedInPost({
-    onSuccess: (postId, mediaCount) => {
-      const message =
-        mediaCount && mediaCount > 0
-          ? `Your post with ${mediaCount} images has been shared to LinkedIn successfully.`
-          : "Your post has been shared to LinkedIn successfully.";
+  const { postToLinkedIn, isPosting, isAuthenticated, progress, currentStage } =
+    useLinkedInPost({
+      onSuccess: (postId, mediaCount) => {
+        const message =
+          mediaCount && mediaCount > 0
+            ? `Your post with ${mediaCount} images has been shared to LinkedIn successfully! 🎉`
+            : "Your post has been shared to LinkedIn successfully! 🎉";
 
-      toast({
-        title: "Success!",
-        description: message,
-      });
-      setOpen(false);
-      setCustomDescription("");
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error,
-        variant: "destructive",
-      });
-    },
-  });
+        toast.success("Post Published!", {
+          description: message,
+          icon: <CheckCircle className="h-4 w-4" />,
+          duration: 5000,
+          action: {
+            label: "View on LinkedIn",
+            onClick: () =>
+              window.open(
+                `https://www.linkedin.com/feed/update/${postId}`,
+                "_blank"
+              ),
+          },
+        });
+        setOpen(false);
+        setCustomDescription("");
+      },
+      onError: (error) => {
+        // Show detailed error message
+        const errorMessage = error.includes("too large")
+          ? "Images are too large. Try with fewer images or reduce quality."
+          : error.includes("Unauthorized")
+          ? "Please reconnect your LinkedIn account and try again."
+          : error.includes("Network")
+          ? "Network error. Please check your connection and try again."
+          : error;
+
+        toast.error("Failed to Post", {
+          description: errorMessage,
+          icon: <XCircle className="h-4 w-4" />,
+          duration: 8000,
+          action: {
+            label: "Retry",
+            onClick: () => {
+              // Retry the post
+              handlePost();
+            },
+          },
+        });
+      },
+    });
 
   const generatePreview = (postData: PostData, customDesc?: string): string => {
     if (customDesc) return customDesc;
@@ -87,10 +113,10 @@ export default function LinkedInPostDialog({
 
   const handlePost = async () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Authentication Required",
+      toast.error("Authentication Required", {
         description: "Please connect your LinkedIn account first.",
-        variant: "destructive",
+        icon: <XCircle className="h-4 w-4" />,
+        duration: 5000,
       });
       return;
     }
@@ -102,7 +128,13 @@ export default function LinkedInPostDialog({
         includeImages
       );
     } catch (error) {
-      // Error handling is done in the hook
+      // Additional error handling for unexpected errors
+      console.error("Unexpected error during post:", error);
+      toast.error("Unexpected Error", {
+        description: "Something went wrong. Please try again.",
+        icon: <XCircle className="h-4 w-4" />,
+        duration: 5000,
+      });
     }
   };
 
@@ -181,6 +213,20 @@ export default function LinkedInPostDialog({
             )}
           </div>
         </div>
+
+        {/* Progress Section */}
+        {isPosting && (
+          <div className="space-y-3 py-4 border-t">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium">Upload Progress</span>
+              <span className="text-muted-foreground">{progress}%</span>
+            </div>
+            <Progress value={progress} className="h-2" />
+            {currentStage && (
+              <p className="text-sm text-muted-foreground">{currentStage}</p>
+            )}
+          </div>
+        )}
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
