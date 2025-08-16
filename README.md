@@ -2,7 +2,17 @@
 
 A modern, interactive web application for creating beautiful LinkedIn posts with multiple themes, syntax highlighting for code snippets, and direct publishing to LinkedIn.
 
+<center>
+
 ![LinkedIn Post Maker](public/demos/black-diamond.png)
+
+</center>
+
+<center>
+
+### [Live Preview](https://linkedin-post-maker.vercel.app/)
+
+</center>
 
 ## ✨ Features
 
