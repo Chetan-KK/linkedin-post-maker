@@ -26,7 +26,7 @@ const PostEditor = (props: Props) => {
         </ResizablePanel>
         <ResizableHandle withHandle className="hideOnPrint" />
         <ResizablePanel defaultSize={75}>
-          <div className="print:h-auto h-screen print:overflow-visible overflow-y-scroll flex justify-center">
+          <div className="print:h-auto h-screen print:overflow-visible relative">
             <OutputPost />
           </div>
         </ResizablePanel>

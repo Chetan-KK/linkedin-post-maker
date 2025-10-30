@@ -11,9 +11,9 @@ import { useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 // @ts-ignore - Ignore type conflicts with styles
 import {
-  anOldHope,
-  atomOneLight,
-} from "react-syntax-highlighter/dist/esm/styles/hljs";
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
@@ -176,7 +176,7 @@ export default function Home() {
           {/* @ts-ignore - Type assertion to bypass React type conflicts */}
           <SyntaxHighlighter
             language={"json"}
-            style={resolvedTheme === "dark" ? anOldHope : atomOneLight}
+            style={resolvedTheme === "dark" ? oneDark : oneLight}
             showLineNumbers
             customStyle={{
               backgroundColor:
