@@ -59,7 +59,7 @@ const UserDescription = ({ contentObject }: Props) => {
           {contentObject ? (
             <pre
               id="editableDiv"
-              className="text-wrap mt-3 max-h-52 overflow-y-auto border-border border rounded-lg p-2"
+              className="text-wrap mt-3 max-h-72 overflow-y-auto border-border border rounded-lg p-2"
             >
               {contentObject.description}
               <br />
